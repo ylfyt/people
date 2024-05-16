@@ -47,7 +47,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
     };
 
     return (
-        <div className="relative">
+        <div className="relative z-10">
             <nav className="dai-navbar bg-base-100">
                 <div className="flex-1">
                     <a className="dai-btn dai-btn-ghost text-xl">{navbarTitle}</a>

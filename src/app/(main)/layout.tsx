@@ -7,7 +7,7 @@ interface MainLayoutProps {
 
 const MainLayout: FunctionComponent<MainLayoutProps> = ({ children }) => {
     return (
-        <div>
+        <div className="min-h-dvh">
             <MobileNavbar />
             <div>{children}</div>
         </div>

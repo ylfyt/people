@@ -33,7 +33,7 @@ const routes: Route[] = [
 interface MobileNavbarProps {}
 
 const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
-    const { darkMode, setDarkMode } = useRootContext();
+    const { darkMode, setDarkMode, navbarTitle } = useRootContext();
     const pathname = usePathname();
 
     const [expand, setExpand] = useState(false);
@@ -50,7 +50,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
         <div className="relative">
             <nav className="dai-navbar bg-base-100">
                 <div className="flex-1">
-                    <a className="dai-btn dai-btn-ghost text-xl">daisyUI</a>
+                    <a className="dai-btn dai-btn-ghost text-xl">{navbarTitle}</a>
                 </div>
                 <div className="flex-none">
                     <button onClick={() => setExpand(true)} className="dai-btn dai-btn-square dai-btn-ghost">
@@ -79,7 +79,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
                             {routes.map((el, idx) => {
                                 return (
                                     <li key={idx}>
-                                        <Link href={el.url}>
+                                        <Link onClick={() => pathname !== el.url && setExpand(false)} href={el.url}>
                                             <div
                                                 className={`flex items-center gap-2 rounded-lg px-4 py-2 ${pathname === el.url ? 'bg-accent text-accent-content' : 'bg-base-200 hover:bg-base-300'}`}
                                             >

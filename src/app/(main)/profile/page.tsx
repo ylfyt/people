@@ -27,35 +27,31 @@ const Profile: FunctionComponent<StudentProps> = () => {
             <div className="flex flex-col items-center gap-2">
                 <img className="size-48 rounded-full" src="/profile.jpg" alt="" />
                 {edit && <button className="dai-btn dai-btn-secondary dai-btn-sm">Change Profile</button>}
+
+                <div className="flex flex-col items-center">
+                    <span className="text-3xl font-semibold text-primary">Yudi Alfayat</span>
+                    <span className="text-sm">yalfayat@gmail.com</span>
+                </div>
             </div>
-            <div className="flex w-full flex-col gap-4 px-8">
-                <div className="flex w-full items-center">
-                    <span className="w-32">Name</span>
-                    <span className="w-4">:</span>
-                    <span>Yudi Alfayat</span>
-                </div>
-                <div className="flex w-full items-center">
-                    <span className="w-32">Email</span>
-                    <span className="w-4">:</span>
-                    <span>yalfayat@gmail.com</span>
-                </div>
-                <div className="flex w-full items-center">
-                    <span className="w-32">Position</span>
-                    <span className="w-4">:</span>
-                    <span>Developer</span>
-                </div>
-                <div className="flex w-full items-center">
-                    <span className="w-32">Phone</span>
-                    <span className="w-4">:</span>
-                    {edit ? (
-                        <input
-                            type="text"
-                            placeholder="Type here"
-                            className="dai-input dai-input-sm dai-input-bordered w-44"
-                        />
-                    ) : (
-                        <span>+6282260416039</span>
-                    )}
+            <div className="w-full px-8">
+                <div className="flex flex-col items-center gap-4 rounded-lg border p-2">
+                    <div className="flex items-center gap-4 text-xl">
+                        <Icon className="size-7" icon="ic:round-person-pin" />
+                        <span>Developer</span>
+                    </div>
+                    <div className="flex items-center gap-4 text-xl">
+                        <Icon className="size-7" icon="icon-park-twotone:phone" />
+                        {edit ? (
+                            <input
+                                type="text"
+                                required
+                                placeholder="Type here"
+                                className="dai-input dai-input-sm dai-input-bordered"
+                            />
+                        ) : (
+                            <span>+6282260416039</span>
+                        )}
+                    </div>
                 </div>
             </div>
             {edit && (

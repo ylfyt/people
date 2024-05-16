@@ -1,3 +1,4 @@
+import MobileNavbar from '@/components/navbar/mobile-navbar';
 import { FunctionComponent } from 'react';
 
 interface MainLayoutProps {
@@ -7,7 +8,7 @@ interface MainLayoutProps {
 const MainLayout: FunctionComponent<MainLayoutProps> = ({ children }) => {
     return (
         <div>
-            <div>Navbar</div>
+            <MobileNavbar />
             <div>{children}</div>
         </div>
     );

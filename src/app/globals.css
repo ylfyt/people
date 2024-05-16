@@ -2,27 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    --foreground-rgb: 0, 0, 0;
-    --background-start-rgb: 214, 219, 220;
-    --background-end-rgb: 255, 255, 255;
-}
+@layer base {
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --foreground-rgb: 255, 255, 255;
-        --background-start-rgb: 0, 0, 0;
-        --background-end-rgb: 0, 0, 0;
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .border,
+    .border-2,
+    .border-3,
+    .border-4 {
+        @apply border-base-300;
+    }
+
+    .border-t,
+    .border-t-2,
+    .border-t-3,
+    .border-t-4 {
+        @apply border-base-300;
+    }
+
+    .border-r,
+    .border-r-2,
+    .border-r-3,
+    .border-r-4 {
+        @apply border-base-300;
+    }
+
+    .border-b,
+    .border-b-2,
+    .border-b-3,
+    .border-b-4 {
+        @apply border-base-300;
+    }
+
+    .border-l,
+    .border-l-2,
+    .border-l-3,
+    .border-l-4 {
+        @apply border-base-300;
     }
 }
 
-body {
-    color: rgb(var(--foreground-rgb));
-    background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
-}
-
-@layer utilities {
-    .text-balance {
-        text-wrap: balance;
+@layer components {
+    .req {
+        @apply after:text-red-500 after:content-['_*'];
     }
 }

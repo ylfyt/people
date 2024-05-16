@@ -1,14 +1,21 @@
 'use client';
 
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { FormChangePassword } from './components/form-change-password';
+import { useRootContext } from '@/contexts/root';
 
 interface StudentProps {}
 
 const Profile: FunctionComponent<StudentProps> = () => {
+    const { setNavbarTitle } = useRootContext();
+
     const [edit, setEdit] = useState(false);
     const [changePassword, setChangePassword] = useState(false);
+
+    useEffect(() => {
+        setNavbarTitle('Profile');
+    }, []);
 
     const handleEditProfile = async () => {
         setEdit(false);

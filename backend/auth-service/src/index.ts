@@ -1,9 +1,7 @@
 
 import { PrismaClient } from '@prisma/client';
-import express, { Response } from 'express';
+import express from 'express';
 import multer from 'multer';
-import { ResponseDto } from './dtos/response.js';
-import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
 import { getFileExtension } from './helper/get-file-extension.js';
@@ -11,6 +9,10 @@ import bcrypt from 'bcrypt';
 import { UserLoginDto } from './dtos/login.js';
 import { UserClaim } from './dtos/claim.js';
 import jwt from 'jsonwebtoken';
+import { ZOD_USER_LOGIN } from './zods/zod-user-login.js';
+import { ZOD_USER_REGISTER } from './zods/zod-user-register.js';
+import { sendErrorResponse, sendSuccessResponse } from './helper/send-response.js';
+import cors from 'cors';
 
 const TOKEN_EXPIRY = 2 * 60 * 60;
 
@@ -19,22 +21,6 @@ function generateJwtToken(claim: UserClaim) {
     return token;
 }
 
-const sendErrorResponse = (res: Response, status: number, message: string) => {
-    const response: ResponseDto = {
-        success: false,
-        message: message
-    };
-    res.status(status).json(response);
-};
-
-function sendSuccessResponse<T = any>(res: Response, data: T) {
-    const response: ResponseDto<T> = {
-        success: true,
-        message: "",
-        data
-    };
-    res.status(200).json(response);
-};
 
 function saveFile(file: Express.Multer.File, filename: string) {
     try {
@@ -47,24 +33,13 @@ function saveFile(file: Express.Multer.File, filename: string) {
     }
 }
 
-const RegisterUserZod = z.object({
-    name: z.string().min(2),
-    email: z.string().email(),
-    position: z.string().min(1),
-    phone: z.string().min(4),
-    password: z.string().min(3).max(10)
-});
-const ZOD_USER_LOGIN = z.object({
-    email: z.string().email(),
-    password: z.string().min(3).max(10)
-});
-
 const main = async () => {
     const app = express();
     const port = 3000;
     const upload = multer();
     const prisma = new PrismaClient();
 
+    app.use(cors({ origin: "*" }));
     app.use(express.json());
 
     app.get('/', (req, res) => {
@@ -110,7 +85,7 @@ const main = async () => {
 
     app.post("/register", upload.single("picture"), async (req, res) => {
         try {
-            const payload = RegisterUserZod.safeParse(JSON.parse(req.body.data));
+            const payload = ZOD_USER_REGISTER.safeParse(JSON.parse(req.body.data));
             if (!payload.success) {
                 console.log(payload.error.errors);
                 sendErrorResponse(res, 400, "Invalid data");
@@ -156,7 +131,7 @@ const main = async () => {
     });
 
     app.listen(port, () => {
-        console.log(`Example app listening on port ${port}`);
+        console.log(`App listening on port ${port}`);
     });
 };
 

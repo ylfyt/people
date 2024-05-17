@@ -8,6 +8,16 @@ import path from 'path';
 import fs from 'fs';
 import { getFileExtension } from './helper/get-file-extension.js';
 import bcrypt from 'bcrypt';
+import { UserLoginDto } from './dtos/login.js';
+import { UserClaim } from './dtos/claim.js';
+import jwt from 'jsonwebtoken';
+
+const TOKEN_EXPIRY = 2 * 60 * 60;
+
+function generateJwtToken(claim: UserClaim) {
+    const token = jwt.sign(claim, 'your_secret_key', { expiresIn: TOKEN_EXPIRY });
+    return token;
+}
 
 const sendErrorResponse = (res: Response, status: number, message: string) => {
     const response: ResponseDto = {
@@ -17,8 +27,8 @@ const sendErrorResponse = (res: Response, status: number, message: string) => {
     res.status(status).json(response);
 };
 
-const sendSuccessResponse = (res: Response, data: any) => {
-    const response: ResponseDto = {
+function sendSuccessResponse<T = any>(res: Response, data: T) {
+    const response: ResponseDto<T> = {
         success: true,
         message: "",
         data
@@ -44,6 +54,10 @@ const RegisterUserZod = z.object({
     phone: z.string().min(4),
     password: z.string().min(3).max(10)
 });
+const ZOD_USER_LOGIN = z.object({
+    email: z.string().email(),
+    password: z.string().min(3).max(10)
+});
 
 const main = async () => {
     const app = express();
@@ -51,8 +65,47 @@ const main = async () => {
     const upload = multer();
     const prisma = new PrismaClient();
 
+    app.use(express.json());
+
     app.get('/', (req, res) => {
         res.send('Hello World!');
+    });
+
+    app.post("/login", async (req, res) => {
+        try {
+            const body = ZOD_USER_LOGIN.safeParse(req.body);
+            console.log(req.body);
+            if (!body.success) {
+                console.log(body.error.errors);
+                sendErrorResponse(res, 400, "Payload is not valid");
+                return;
+            }
+            const user = await prisma.user.findFirst({
+                where: {
+                    email: body.data.email,
+                }
+            });
+            if (!user) {
+                sendErrorResponse(res, 400, "Email or password is wrong");
+                return;
+            }
+            const valid = await bcrypt.compare(body.data.password, user.password);
+            if (!valid) {
+                console.log('invalid password');
+                sendErrorResponse(res, 400, "Email or password is wrong");
+                return;
+            }
+            const token = generateJwtToken({
+                email: user.email,
+                id: user.id
+            });
+            user.password = "";
+            sendSuccessResponse<UserLoginDto>(res, { duration: TOKEN_EXPIRY, user, token: token });
+            return;
+        } catch (error) {
+            console.log('error', error);
+            sendErrorResponse(res, 500, "Internal server error");
+        }
     });
 
     app.post("/register", upload.single("picture"), async (req, res) => {

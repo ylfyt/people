@@ -31,7 +31,7 @@ export async function sendHttp<T = any>({
         const res = await fetch(url, {
             method,
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("jit")})}`,
+                Authorization: `Bearer ${localStorage.getItem("jit")}`,
                 "Content-Type": payload instanceof FormData ? "multipart/form-data" : "application/json"
             },
             signal: abortSignal,

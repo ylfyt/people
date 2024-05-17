@@ -1,6 +1,6 @@
 
 import { PrismaClient } from '@prisma/client';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -15,10 +15,25 @@ import { sendErrorResponse, sendSuccessResponse } from './helper/send-response.j
 import cors from 'cors';
 
 const TOKEN_EXPIRY = 2 * 60 * 60;
+const JWT_SECRET_KEY = 'your_secret_key';
 
 function generateJwtToken(claim: UserClaim) {
-    const token = jwt.sign(claim, 'your_secret_key', { expiresIn: TOKEN_EXPIRY });
+    const token = jwt.sign(claim, JWT_SECRET_KEY, {});
     return token;
+}
+
+function parsetJwtToken(token: string): UserClaim | undefined {
+    try {
+        const res = jwt.verify(token, JWT_SECRET_KEY);
+        if (typeof res === "string") {
+            console.log(res, token);
+            return;
+        }
+        return res as UserClaim;
+    } catch (error) {
+        console.log("error", error, token);
+        return;
+    }
 }
 
 
@@ -33,6 +48,21 @@ function saveFile(file: Express.Multer.File, filename: string) {
     }
 }
 
+const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.authorization?.split("Bearer ")[1] ?? "";
+    if (token === "") {
+        sendErrorResponse(res, 401, "invalid");
+        return;
+    }
+    const claim = parsetJwtToken(token);
+    if (!claim) {
+        sendErrorResponse(res, 401, "invalid");
+        return;
+    }
+    res.locals.claim = claim;
+    next();
+};
+
 const main = async () => {
     const app = express();
     const port = 3000;
@@ -46,10 +76,22 @@ const main = async () => {
         res.send('Hello World!');
     });
 
+    app.get("/me", authMiddleware, async (req, res) => {
+        const claim = res.locals.claim as UserClaim;
+
+        const user = await prisma.user.findFirst({ where: { id: claim.id } });
+        if (!user) {
+            console.log("user doesn't exist");
+            sendErrorResponse(res, 401, "invalid");
+            return;
+        }
+        user.password = "";
+        sendSuccessResponse(res, user);
+    });
+
     app.post("/login", async (req, res) => {
         try {
             const body = ZOD_USER_LOGIN.safeParse(req.body);
-            console.log(req.body);
             if (!body.success) {
                 console.log(body.error.errors);
                 sendErrorResponse(res, 400, "Payload is not valid");

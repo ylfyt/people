@@ -9,6 +9,8 @@ interface IRootContext {
     setDarkMode: Dispatch<SetStateAction<boolean>>;
     navbarTitle: string;
     setNavbarTitle: Dispatch<SetStateAction<string>>;
+    showLoading: (loading: boolean) => boolean;
+    globalLoading: boolean;
 }
 
 const RootContext = createContext<IRootContext>({
@@ -16,6 +18,8 @@ const RootContext = createContext<IRootContext>({
     navbarTitle: 'Home',
     setDarkMode() {},
     setNavbarTitle() {},
+    showLoading: () => false,
+    globalLoading: false
 });
 
 interface RootProviderProps {
@@ -24,13 +28,20 @@ interface RootProviderProps {
 const RootProvider: FC<RootProviderProps> = ({ children }) => {
     const [navbarTitle, setNavbarTitle] = useState('Home');
     const [darkMode, setDarkMode] = useLocalStorage<boolean>('dark', false);
+    const [globalLoading, setGlobalLoading] = useState(false);
+
+    const showLoading = (loading: boolean): boolean => {
+        setGlobalLoading(loading);
+        return loading;
+    };
+
     useEffect(() => {
         type ThemeOptions = keyof typeof CustomColorScheme;
         const themeName: ThemeOptions = darkMode ? 'darkScheme' : 'lightRetro';
         document.documentElement.setAttribute('data-theme', themeName);
     }, [darkMode]);
     return (
-        <RootContext.Provider value={{ darkMode, setDarkMode, navbarTitle, setNavbarTitle }}>
+        <RootContext.Provider value={{ darkMode, setDarkMode, navbarTitle, setNavbarTitle, globalLoading, showLoading }}>
             {children}
         </RootContext.Provider>
     );

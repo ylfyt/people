@@ -2,7 +2,6 @@ FROM node:latest as nextBuilder
 
 # ARG NEXT_PUBLIC_API_BASE_URL
 # ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
-ENV NODE_ENV production
 ENV PORT 3000
 EXPOSE 3000
 
@@ -31,6 +30,8 @@ RUN npm run build
 FROM node:latest
 
 ENV PORT 3000
+ENV ENV_MODE PROD
+ENV NODE_ENV production
 WORKDIR /app
 
 COPY package*.json .

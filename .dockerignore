@@ -1,5 +1,9 @@
 dist
 /next-main/node_modules
+**/node_modules
+/next-main/dist
+/next-main/.next
+/next-main/.env
 node_modules
 /uploads/*
 !/uploads/README.md

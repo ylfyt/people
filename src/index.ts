@@ -7,6 +7,9 @@ import { presenceController } from './controllers/presence-controller.js';
 import path from 'path';
 import fs from 'fs';
 
+const MAIN_STATIC_DIR = !ENV.IS_PROD ? "next-main/dist" : "dist-ui";
+const ADMIN_STATIC_DIR = !ENV.IS_PROD ? "next-admin/dist" : "dist-admin";
+
 const main = async () => {
     const app = express();
 
@@ -21,18 +24,26 @@ const main = async () => {
     app.use("/api/user", userController);
     app.use("/api/presence", presenceController);
 
+    // SPA Handler
     app.get('*', async function (req, res) {
-        const target = path.join('dist-ui', req.path);
+        const target = path.join(MAIN_STATIC_DIR, req.path);
         let isExist = true;
         let isDirectory = false;
         try {
             const t = fs.statSync(target);
             isDirectory = t.isDirectory();
+            if (isDirectory) {
+                const stat = fs.statSync(path.join(target, "index.html"));
+                if (stat.isFile()) {
+                    res.sendFile(path.join(process.cwd(), target, "index.html"));
+                    return;
+                }
+            }
         } catch (error) {
             isExist = false;
         }
         if (!isExist || isDirectory) {
-            res.sendFile(path.join(process.cwd(), "dist-ui", "index.html"));
+            res.sendFile(path.join(process.cwd(), MAIN_STATIC_DIR, "index.html"));
             return;
         }
         res.sendFile(path.join(process.cwd(), target));

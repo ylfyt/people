@@ -5,12 +5,18 @@ import { DailyPresenceCard } from '@/components/daily-presence-card';
 import { DailyPresenceCardSkeleton } from '@/components/daily-presence-card-skeleton';
 import { Icon } from '@iconify/react';
 import { useRootContext } from '@/contexts/root';
+import { Presence } from '@/types/presence';
+import { sendHttp } from '@/helper/send-http';
+import { ENV } from '@/helper/env';
+import { toast } from 'react-toastify';
 
 interface ReportProps {}
 
 const Report: FunctionComponent<ReportProps> = () => {
     const { setNavbarTitle } = useRootContext();
     const [loading, setLoading] = useState(false);
+
+    const [presences, setPresences] = useState<Presence[]>([]);
 
     useEffect(() => {
         setNavbarTitle('Report');
@@ -19,9 +25,15 @@ const Report: FunctionComponent<ReportProps> = () => {
 
     const getData = async () => {
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-        }, 2000);
+        const res = await sendHttp<Presence[]>({
+            url: `${ENV.API_BASE_URL}/presence`
+        });
+        setLoading(false);
+        if (!res.success) {
+            toast(res.message, { type: "error" });
+            return;
+        }
+        setPresences(res.data);
     };
 
     return (
@@ -48,7 +60,9 @@ const Report: FunctionComponent<ReportProps> = () => {
                         return <DailyPresenceCardSkeleton key={idx} />;
                     })
                 ) : (
-                    <DailyPresenceCard />
+                    presences.map((el, idx) => {
+                        return <DailyPresenceCard key={idx} presence={el} />;
+                    })
                 )}
             </div>
         </div>

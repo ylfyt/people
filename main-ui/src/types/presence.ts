@@ -3,5 +3,5 @@ export type Presence = {
     userId: number;
     enterDate: string;
     exitDate?: string;
-    modifiedAt: Date;
+    modifiedAt: string;
 };

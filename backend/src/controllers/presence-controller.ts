@@ -11,47 +11,48 @@ const app = express.Router();
 
 export { app as presenceController };
 
-// app.get("/", async (req, res) => {
-//     try {
-//         let start = !req.query.start?.length ? undefined : new Date(req.query.start as string);
-//         if (start && isNaN(start.getTime())) {
-//             start = undefined;
-//         }
-//         let end = !req.query.end?.length ? undefined : new Date(req.query.end as string);
-//         if (end && isNaN(end.getTime())) {
-//             end = undefined;
-//         }
-//         if (start && !end || !start && end) {
-//             sendErrorResponse(res, 400, "Start and end cannot empty");
-//             return;
-//         }
-//         const today = new Date();
-//         if (!start) start = new Date(today.getFullYear(), today.getMonth(), 1);
-//         if (!end) end = today;
-//         start.setHours(0, 0, 0, 0);
-//         end.setDate(end.getDate() + 1);
-//         end.setHours(0, 0, 0, 0);
+app.get("/", authMiddleware, async (req, res) => {
+    try {
+        let start = !req.query.start?.length ? undefined : new Date(req.query.start as string);
+        if (start && isNaN(start.getTime())) {
+            start = undefined;
+        }
+        let end = !req.query.end?.length ? undefined : new Date(req.query.end as string);
+        if (end && isNaN(end.getTime())) {
+            end = undefined;
+        }
+        if (start && !end || !start && end) {
+            sendErrorResponse(res, 400, "Start and end cannot empty");
+            return;
+        }
+        const today = new Date();
+        if (!start) start = new Date(today.getFullYear(), today.getMonth(), 1);
+        if (!end) end = today;
+        start.setHours(0, 0, 0, 0);
+        end.setDate(end.getDate() + 1);
+        end.setHours(0, 0, 0, 0);
 
-//         const id = 1;
-//         const presences = await prisma.presence.findMany({
-//             where: {
-//                 userId: id,
-//                 createdAt: {
-//                     gte: start,
-//                     lt: end
-//                 }
-//             },
-//             orderBy: {
-//                 createdAt: "asc"
-//             }
-//         });
-//         console.log(presences);
-//         sendSuccessResponse(res, "ok");
-//     } catch (error) {
-//         console.log("error", error);
-//         sendErrorResponse(res, 500, "Internal server error");
-//     }
-// });
+        const claim = res.locals.claim as UserClaim;
+        const presences = await prisma.presence.findMany({
+            where: {
+                userId: claim.id,
+                enterDate: {
+                    gte: start
+                },
+                modifiedAt: {
+                    lt: end
+                }
+            },
+            orderBy: {
+                modifiedAt: "desc"
+            }
+        });
+        sendSuccessResponse(res, presences);
+    } catch (error) {
+        console.log("error", error);
+        sendErrorResponse(res, 500, "Internal server error");
+    }
+});
 
 app.get("/last", authMiddleware, async (req, res) => {
     try {
@@ -115,10 +116,6 @@ app.post("/", authMiddleware, async (req, res) => {
         if (lastPresence.exitDate != null && isSameDate(lastPresence.exitDate, new Date())) {
             // TODO: Handle this if can presence more than one in the same date
             sendErrorResponse(res, 400, "alreay presence today");
-            return;
-        }
-        if (type === PresenceTypes.ENTER) {
-            sendErrorResponse(res, 400, "must be exit");
             return;
         }
         let updatedPresence: Presence;

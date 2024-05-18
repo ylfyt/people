@@ -39,3 +39,10 @@ next-env.d.ts
 dist
 build
 backend/**/node_modules
+
+node_modules
+# Keep environment variables out of version control
+.env
+/uploads/*
+!/uploads/README.md
+dist*

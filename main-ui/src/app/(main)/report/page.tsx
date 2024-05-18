@@ -43,7 +43,7 @@ const Report: FunctionComponent<ReportProps> = () => {
 
     return (
         <div className="flex min-h-[75dvh] w-full flex-col gap-2">
-            <div className="mx-4 flex items-center justify-between rounded-lg border p-2">
+            <div className="mx-4 flex items-center justify-between sm:gap-8 sm:justify-start rounded-lg border p-2">
 
                 <div className="flex items-center gap-2 sm:flex-row flex-col">
                     <div className='flex gap-2 items-center'>

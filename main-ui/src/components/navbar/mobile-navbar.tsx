@@ -50,15 +50,11 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
 
     return (
         <div className="relative z-10">
-            <nav className="dai-navbar bg-base-100">
-                <div className="flex-1">
-                    <a className="dai-btn dai-btn-ghost text-xl">{navbarTitle}</a>
-                </div>
-                <div className="flex-none">
-                    <button onClick={() => setExpand(true)} className="dai-btn dai-btn-square dai-btn-ghost">
-                        <Icon className="size-7" icon="material-symbols:menu" />
-                    </button>
-                </div>
+            <nav className="dai-navbar flex justify-between md:justify-end md:flex-row-reverse bg-base-100">
+                <span className="dai-btn dai-btn-ghost text-xl">{navbarTitle}</span>
+                <button onClick={() => setExpand(true)} className="dai-btn dai-btn-square dai-btn-ghost">
+                    <Icon className="size-7" icon="material-symbols:menu" />
+                </button>
             </nav>
             {expand && (
                 <div
@@ -66,7 +62,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
                     onClick={handleClick}
                     className="absolute left-0 top-0 h-dvh w-full bg-black bg-opacity-50"
                 >
-                    <div className="ml-auto flex h-dvh w-3/4 flex-col justify-between bg-base-100">
+                    <div className="ml-auto md:ml-0 md:mr-auto flex h-dvh w-3/4 sm:w-[20rem] flex-col justify-between bg-base-100">
                         <div className="flex items-center justify-between px-4 py-2">
                             <h2 className="text-2xl font-semibold italic text-primary">Peoples</h2>
                             <button

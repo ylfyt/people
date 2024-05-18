@@ -88,20 +88,20 @@ const Home: FunctionComponent<HomeProps> = () => {
     return (
         <div className="grid min-h-[75dvh] place-items-center">
             {loading ? (
-                <div className="flex flex-col gap-4">
-                    <button className="dai-btn dai-skeleton h-28 w-40"></button>
-                    <button className="dai-btn dai-skeleton h-28 w-40"></button>
+                <div className="flex flex-col gap-4 md:gap-10 sm:flex-row">
+                    <button className="dai-btn dai-skeleton h-28 w-40 sm:h-40 sm:w-60"></button>
+                    <button className="dai-btn dai-skeleton h-28 w-40 sm:h-40 sm:w-60"></button>
                 </div>
             ) : (
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 md:gap-10 sm:flex-row">
                     <LoadingButton
                         loading={loadingEnter}
                         size='lg'
                         onClick={() => presence("ENTER")}
                         disabled={enterTime.length > 0 || failed}
-                        className="dai-btn dai-btn-success flex h-28 w-40 flex-col gap-2"
+                        className="dai-btn dai-btn-success flex items-center h-28 w-40 sm:h-40 sm:w-60 flex-col gap-2"
                     >
-                        <span className="flex items-center gap-2 text-2xl">
+                        <span className="flex items-center gap-2 text-2xl justify-center">
                             <Icon icon="icomoon-free:enter" />
                             Enter
                         </span>
@@ -112,9 +112,9 @@ const Home: FunctionComponent<HomeProps> = () => {
                         size='lg'
                         onClick={() => presence("EXIT")}
                         disabled={enterTime.length === 0 || exitTime.length > 0 || failed}
-                        className="dai-btn dai-btn-error flex h-28 w-40 flex-col gap-2"
+                        className="dai-btn dai-btn-error items-center flex h-28 w-40 sm:h-40 sm:w-60 flex-col gap-2"
                     >
-                        <span className="flex items-center gap-2 text-2xl">
+                        <span className="flex items-center gap-2 text-2xl justify-center">
                             <Icon icon="mingcute:exit-fill" />
                             Exit
                         </span>

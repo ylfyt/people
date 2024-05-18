@@ -70,7 +70,7 @@ const Profile: FunctionComponent<StudentProps> = () => {
     };
 
     return (
-        <div className=" relative flex min-h-[75dvh] flex-col items-center gap-8 px-4 pt-20">
+        <div className="relative flex min-h-[75dvh] flex-col md:flex-row items-center justify-center gap-8 px-4 pt-20">
             {!edit && !changePassword && (
                 <button
                     onClick={() => setEdit(true)}
@@ -96,11 +96,11 @@ const Profile: FunctionComponent<StudentProps> = () => {
                     <span className="text-sm">{user?.email}</span>
                 </div>
             </div>
-            <div className="w-full px-8">
-                <div className="flex flex-col items-center gap-4 rounded-lg border p-2">
+            <div className="px-8 flex w-full md:w-[30rem] flex-col items-center gap-4">
+                <div className="flex w-full flex-col items-center gap-4 rounded-lg border p-2">
                     <div className="flex items-center gap-4 text-xl">
                         <Icon className="size-7" icon="ic:round-person-pin" />
-                        <span>{user?.position}</span>
+                        <span className='text-sm font-semibold sm:text-base'>{user?.position}</span>
                     </div>
                     <div className="flex items-center gap-4 text-xl">
                         <Icon className="size-7" icon="icon-park-twotone:phone" />
@@ -111,25 +111,25 @@ const Profile: FunctionComponent<StudentProps> = () => {
                                 onChange={(e) => setPhone(e.target.value)}
                                 required
                                 placeholder="Type here"
-                                className="dai-input dai-input-sm dai-input-bordered"
+                                className="dai-input dai-input-sm w-40 dai-input-bordered"
                             />
                         ) : (
-                            <span>{user?.phone}</span>
+                            <span className='text-sm sm:text-base font-semibold'>{user?.phone}</span>
                         )}
                     </div>
                 </div>
+                {edit && (
+                    <LoadingButton disabled={!phone.length} loading={loadingUpdateProfile} onClick={handleEditProfile} className="dai-btn dai-btn-primary">
+                        Submit
+                    </LoadingButton>
+                )}
+                {changePassword && <FormChangePassword setChangePassword={setChangePassword} />}
+                {!edit && !changePassword && (
+                    <button onClick={() => setChangePassword(true)} className="dai-btn dai-btn-primary mt-8">
+                        Change Password
+                    </button>
+                )}
             </div>
-            {edit && (
-                <LoadingButton disabled={!phone.length} loading={loadingUpdateProfile} onClick={handleEditProfile} className="dai-btn dai-btn-primary">
-                    Submit
-                </LoadingButton>
-            )}
-            {changePassword && <FormChangePassword setChangePassword={setChangePassword} />}
-            {!edit && !changePassword && (
-                <button onClick={() => setChangePassword(true)} className="dai-btn dai-btn-primary mt-8">
-                    Change Password
-                </button>
-            )}
         </div>
     );
 };

@@ -7,7 +7,6 @@ import { presenceController } from './controllers/presence-controller.js';
 import path from 'path';
 import fs from 'fs';
 
-
 const main = async () => {
     const app = express();
 
@@ -23,7 +22,7 @@ const main = async () => {
     app.use("/api/presence", presenceController);
 
     app.get('*', async function (req, res) {
-        const target = path.join('admin', req.path);
+        const target = path.join('dist-ui', req.path);
         let isExist = true;
         let isDirectory = false;
         try {
@@ -33,7 +32,7 @@ const main = async () => {
             isExist = false;
         }
         if (!isExist || isDirectory) {
-            res.sendFile(path.join(process.cwd(), "admin", "index.html"));
+            res.sendFile(path.join(process.cwd(), "dist-ui", "index.html"));
             return;
         }
         res.sendFile(path.join(process.cwd(), target));

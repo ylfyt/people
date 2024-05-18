@@ -38,7 +38,7 @@ const AuthContextProvider: FunctionComponent<AuthContextProviderProps> = ({ chil
         }
         setLoading(true);
         const res = await sendHttp<User>({
-            url: `${ENV.AUTH_BASE_URL}/me`
+            url: `${ENV.API_BASE_URL}/user/me`
         });
         setLoading(false);
         if (!res.success) {

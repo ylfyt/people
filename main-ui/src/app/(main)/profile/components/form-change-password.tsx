@@ -31,7 +31,7 @@ export const FormChangePassword: FunctionComponent<FormChangePasswordProps> = ({
         };
         setLoading(true);
         const res = await sendHttp({
-            url: `${ENV.AUTH_BASE_URL}/user/${user?.id}/change-password`,
+            url: `${ENV.API_BASE_URL}/user/${user?.id}/change-password`,
             method: 'put',
             payload
         });

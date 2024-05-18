@@ -1,7 +1,6 @@
 import { ENV } from '@/helper/env';
 import { sendHttp } from '@/helper/send-http';
 import { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
-import { toast } from 'react-toastify';
 import { LoadingButton } from './loading-button';
 
 interface ModalLogoutProps {
@@ -14,7 +13,7 @@ const ModalLogout: FunctionComponent<ModalLogoutProps> = ({ open, setOpen }) => 
     const logout = async () => {
         setLoading(true);
         await sendHttp({
-            url: `${ENV.AUTH_BASE_URL}/logout`,
+            url: `${ENV.API_BASE_URL}/user/logout`,
             method: 'post'
         });
         setLoading(false);

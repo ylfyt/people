@@ -20,7 +20,7 @@ const Profile: FunctionComponent<StudentProps> = () => {
     const [edit, setEdit] = useState(false);
     const [changePassword, setChangePassword] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [pictureUrl, setImageUrl] = useState(`${ENV.AUTH_BASE_URL}/${user?.profil_pic_url}`);
+    const [pictureUrl, setImageUrl] = useState(`${ENV.API_BASE_URL}/${user?.profil_pic_url}`);
     const [loadingUpdateProfile, setLoadingUpdateProfile] = useState(false);
 
     const [phone, setPhone] = useState(user?.phone ?? "");
@@ -32,7 +32,7 @@ const Profile: FunctionComponent<StudentProps> = () => {
 
     useEffect(() => {
         if (!picture) {
-            setImageUrl(`${ENV.AUTH_BASE_URL}/${user?.profil_pic_url}`);
+            setImageUrl(`${ENV.API_BASE_URL}/${user?.profil_pic_url}`);
             return;
         }
         const reader = new FileReader();
@@ -55,7 +55,7 @@ const Profile: FunctionComponent<StudentProps> = () => {
 
         setLoadingUpdateProfile(true);
         const res = await sendHttp<User>({
-            url: `${ENV.AUTH_BASE_URL}/user/${user?.id}`,
+            url: `${ENV.API_BASE_URL}/user/${user?.id}`,
             method: "put",
             payload: formData
         });

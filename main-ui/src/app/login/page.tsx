@@ -39,7 +39,7 @@ const Profile: FunctionComponent<ProfileProps> = () => {
         };
         setLoading(true);
         const res = await sendHttp<UserLoginResponse>({
-            url: `${ENV.AUTH_BASE_URL}/login`,
+            url: `${ENV.API_BASE_URL}/user/login`,
             method: "post",
             payload
         });

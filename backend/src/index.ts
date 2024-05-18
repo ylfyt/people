@@ -3,6 +3,7 @@ import cors from 'cors';
 import { STATIC_DIR } from './contants.js';
 import { userController } from './controllers/user-controller.js';
 import { ENV } from './helper/env.js';
+import { presenceController } from './controllers/presence-controller.js';
 
 
 const main = async () => {
@@ -17,6 +18,7 @@ const main = async () => {
     });
 
     app.use("/api/user", userController);
+    app.use("/api/presence", presenceController);
 
     app.listen(ENV.PORT || 4000, () => {
         console.log(`App listening on port ${ENV.PORT || 4000}`);

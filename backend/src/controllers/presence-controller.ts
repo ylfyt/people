@@ -4,10 +4,37 @@ import { UserClaim } from '../dtos/claim.js';
 import { prisma } from '../prisma.js';
 import { sendErrorResponse, sendSuccessResponse } from '../helper/send-response.js';
 import { PresenceType } from '@prisma/client';
+import { LastPresenceDto } from '../dtos/presence.js';
 
 const app = express.Router();
 
 export { app as presenceController };
+
+app.get("/last", authMiddleware, async (req, res) => {
+    try {
+        const claim = res.locals.claim as UserClaim;
+        const presences = await prisma.presence.findMany({
+            where: {
+                userId: claim.id,
+                createdAt: {
+                    lt: new Date()
+                }
+            },
+            orderBy: {
+                createdAt: "desc"
+            },
+            take: 2
+        });
+        const response: LastPresenceDto = {
+            enterDate: presences.length == 2 ? presences[1].createdAt : presences.length === 1 ? presences[0].createdAt : undefined,
+            exitDate: presences.length == 2 ? presences[0].createdAt : undefined
+        };
+        sendSuccessResponse(res, response);
+    } catch (error) {
+        console.log("error", error);
+        sendErrorResponse(res, 500, "Internal server error");
+    }
+});
 
 app.post("/", authMiddleware, async (req, res) => {
     try {

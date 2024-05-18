@@ -25,6 +25,10 @@ app.get("/last", authMiddleware, async (req, res) => {
             },
             take: 2
         });
+        if (presences.length > 0 && presences[0].type === "EXIT" && !isSameDate(presences[0].createdAt, new Date())) {
+            sendSuccessResponse<LastPresenceDto>(res, {});
+            return;
+        }
         const response: LastPresenceDto = {
             enterDate: presences.length == 2 ? presences[1].createdAt : presences.length === 1 ? presences[0].createdAt : undefined,
             exitDate: presences.length == 2 ? presences[0].createdAt : undefined

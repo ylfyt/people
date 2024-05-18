@@ -42,7 +42,7 @@ export const LoadingButton: FunctionComponent<LoadingButtonProps> = ({ onClick, 
             {
                 loading &&
                 <span
-                    className={`${loadingSize[size]} dai-loading dai-loading-spinner absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-secondary`}
+                    className={`${loadingSize[size]} dai-loading dai-loading-spinner absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-primary`}
                 ></span>
             }
         </button>

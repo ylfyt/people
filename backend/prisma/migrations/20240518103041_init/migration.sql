@@ -1,6 +1,3 @@
--- CreateEnum
-CREATE TYPE "PresenceType" AS ENUM ('ENTER', 'EXIT');
-
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -18,8 +15,9 @@ CREATE TABLE "User" (
 CREATE TABLE "Presence" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "type" "PresenceType" NOT NULL,
+    "enterDate" TIMESTAMP(3) NOT NULL,
+    "exitDate" TIMESTAMP(3),
+    "modifiedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Presence_pkey" PRIMARY KEY ("id")
 );

@@ -64,9 +64,9 @@ const Home: FunctionComponent<HomeProps> = () => {
 
         toast("Success", { type: "success" });
         if (type === 'ENTER') {
-            setEnterTime(formatDate(res.data.createdAt));
+            setEnterTime(formatDate(res.data.enterDate));
         } else {
-            setExitTime(formatDate(res.data.createdAt));
+            setExitTime(!res.data.exitDate?.length ? "" : formatDate(res.data.exitDate));
         }
     };
 

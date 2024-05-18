@@ -1,6 +1,7 @@
 export type Presence = {
     id: number;
     userId: number;
-    createdAt: string;
-    type: "ENTER" | "EXIT";
+    enterDate: string;
+    exitDate?: string;
+    modifiedAt: Date;
 };

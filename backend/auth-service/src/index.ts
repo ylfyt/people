@@ -13,9 +13,11 @@ import { ZOD_USER_LOGIN } from './zods/zod-user-login.js';
 import { ZOD_USER_REGISTER } from './zods/zod-user-register.js';
 import { sendErrorResponse, sendSuccessResponse } from './helper/send-response.js';
 import cors from 'cors';
+import { ZOD_USER_UPDATE } from './zods/zod-user-update.js';
 
 const TOKEN_EXPIRY = 2 * 60 * 60;
 const JWT_SECRET_KEY = 'your_secret_key';
+const STATIC_DIR = "uploads";
 
 function generateJwtToken(claim: UserClaim) {
     const token = jwt.sign(claim, JWT_SECRET_KEY, {});
@@ -39,7 +41,7 @@ function parsetJwtToken(token: string): UserClaim | undefined {
 
 function saveFile(file: Express.Multer.File, filename: string) {
     try {
-        const filePath = path.join(process.cwd(), './uploads/', filename);
+        const filePath = path.join(process.cwd(), `./${STATIC_DIR}/`, filename);
         fs.writeFileSync(filePath, file.buffer);
         return true;
     } catch (error) {
@@ -69,6 +71,7 @@ const main = async () => {
     const upload = multer();
     const prisma = new PrismaClient();
 
+    app.use("/uploads", express.static(STATIC_DIR));
     app.use(cors({ origin: "*" }));
     app.use(express.json());
 
@@ -90,10 +93,65 @@ const main = async () => {
     });
 
     app.post("/logout", authMiddleware, async (req, res) => {
-        const claim = res.locals.claim as UserClaim
+        const claim = res.locals.claim as UserClaim;
         console.log("logout", claim);
-        sendSuccessResponse(res, true)
-    })
+        sendSuccessResponse(res, true);
+    });
+
+    app.put("/user/:id", authMiddleware, upload.single("picture"), async (req, res) => {
+        try {
+            const id = parseInt(req.params.id);
+            if (isNaN(id)) {
+                sendErrorResponse(res, 400, "Invalid id");
+                return;
+            }
+
+            const body = ZOD_USER_UPDATE.safeParse(JSON.parse(req.body.data));
+            if (!body.success) {
+                sendErrorResponse(res, 400, "Data is not valid");
+                return;
+            }
+            const claim = res.locals.claim as UserClaim;
+
+            const user = await prisma.user.findFirst({
+                where: { id: claim.id }
+            });
+            if (!user) {
+                sendErrorResponse(res, 400, "User doesn't exist");
+                return;
+            }
+            let picturePath = user.profil_pic_url;
+            if (req.file) {
+                const ACCEPTED_EXT = ["png", "jpg", "jpeg"];
+                const ext = getFileExtension(req.file.originalname ?? '');
+                if (!ACCEPTED_EXT.includes(ext)) {
+                    sendErrorResponse(res, 400, "Invalid file type");
+                    return;
+                }
+                const filename = `${user.email}_${new Date().getTime()}.${ext}`;
+                const success = saveFile(req.file, filename);
+                if (!success) {
+                    sendErrorResponse(res, 500, "Internal server error");
+                    return;
+                }
+                picturePath = `${STATIC_DIR}/${filename}`;
+            }
+            const updatedUser = await prisma.user.update({
+                where: {
+                    id: claim.id
+                },
+                data: {
+                    phone: body.data.phone,
+                    profil_pic_url: picturePath
+                }
+            });
+            updatedUser.password = "";
+            sendSuccessResponse(res, updatedUser);
+        } catch (error) {
+            console.log("error", error);
+            sendErrorResponse(res, 500, "Internal server error");
+        }
+    });
 
     app.post("/login", async (req, res) => {
         try {
@@ -167,7 +225,7 @@ const main = async () => {
                 data: {
                     ...payload.data,
                     password: hashedPassword,
-                    profil_pic_url: `/upload/${filename}`,
+                    profil_pic_url: `${STATIC_DIR}/${filename}`,
                 }
             });
             newUser.password = "";

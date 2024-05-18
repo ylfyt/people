@@ -9,6 +9,8 @@ import { Presence } from '@/types/presence';
 import { sendHttp } from '@/helper/send-http';
 import { ENV } from '@/helper/env';
 import { toast } from 'react-toastify';
+import { formatDate } from '@/helper/format-date';
+import { dateDiffHour } from '@/helper/date-diff-hour';
 
 interface ReportProps {}
 
@@ -77,16 +79,66 @@ const Report: FunctionComponent<ReportProps> = () => {
                     }} className='dai-btn dai-btn-sm'><Icon icon="ic:baseline-clear" /></button>}
                 </div>
             </div>
-            <div className="grid grid-cols-1 gap-2 px-4">
-                {loading ? (
+            <div className='mx-4 hidden sm:block border rounded-lg'>
+                <div className="overflow-x-auto">
+                    <table className="dai-table">
+                        <thead>
+                            <tr>
+                                <th className='w-12'></th>
+                                <th>Date</th>
+                                <th>Enter</th>
+                                <th>Exit</th>
+                                <th>Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                loading ? (
+                                    Array.from({ length: 10 }).map((_, idx) => {
+                                        return (
+                                            <tr>
+                                                <td><p className='dai-skeleton w-8 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-36 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-24 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-24 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-8 h-6'></p></td>
+                                            </tr>
+                                        );
+                                    })
+                                )
+                                    : presences.length === 0 ?
+                                        <tr><td colSpan={5} className='text-center'>No data</td></tr>
+                                        :
+                                        presences.map((el, idx) => {
+                                            return (
+                                                <tr key={idx} className="dai-hover">
+                                                    <th>{idx + 1}</th>
+                                                    <td>{formatDate(el.enterDate, { onlyDate: true })}</td>
+                                                    <td>{formatDate(el.enterDate, { onlyTime: true })}</td>
+                                                    <td>{!el.exitDate ? "-" : formatDate(el.exitDate, { onlyTime: true })}</td>
+                                                    <td>{!el.exitDate ? "-" : dateDiffHour(el.enterDate, el.exitDate)}</td>
+                                                </tr>
+                                            );
+                                        })
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div className="grid sm:hidden grid-cols-1 gap-2 px-4">
+                {loading ?
                     Array.from({ length: 5 }).map((_, idx) => {
                         return <DailyPresenceCardSkeleton key={idx} />;
                     })
-                ) : (
-                    presences.map((el, idx) => {
-                        return <DailyPresenceCard key={idx} presence={el} />;
-                    })
-                )}
+                    :
+                    presences.length === 0 ?
+                        <div className='col-span-full text-center mt-4'>No Data</div>
+                        : (
+                            presences.map((el, idx) => {
+                                return <DailyPresenceCard key={idx} presence={el} />;
+                            })
+                        )
+                }
             </div>
         </div>
     );

@@ -50,8 +50,8 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
 
     return (
         <div className="relative z-10">
-            <nav className="dai-navbar flex justify-between md:justify-end md:flex-row-reverse bg-base-100">
-                <span className="dai-btn dai-btn-ghost text-xl">{navbarTitle}</span>
+            <nav className="dai-navbar flex justify-between md:gap-4 md:justify-end md:flex-row-reverse bg-base-100">
+                <span className="text-xl font-semibold mx-2 md:mx-0">{navbarTitle}</span>
                 <button onClick={() => setExpand(true)} className="dai-btn dai-btn-square dai-btn-ghost">
                     <Icon className="size-7" icon="material-symbols:menu" />
                 </button>

@@ -41,6 +41,9 @@ export async function sendHttp<T = any>({
         });
         const response: ResponseDto<T> = await res.json();
         response.code = res.status;
+        if (res.status === 401) {
+            window.location.href = "/login"
+        }
         return response;
     } catch (error) {
         console.log('ERR', error);

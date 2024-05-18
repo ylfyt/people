@@ -13,15 +13,12 @@ const ModalLogout: FunctionComponent<ModalLogoutProps> = ({ open, setOpen }) => 
     const [loading, setLoading] = useState(false);
     const logout = async () => {
         setLoading(true);
-        const res = await sendHttp({
+        await sendHttp({
             url: `${ENV.AUTH_BASE_URL}/logout`,
             method: 'post'
         });
         setLoading(false);
-        if (!res.success) {
-            toast(res.message, { type: "error" });
-            return;
-        }
+        setOpen(false);
         localStorage.removeItem("jit");
         window.location.href = "/login";
     };

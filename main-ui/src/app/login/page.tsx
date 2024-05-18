@@ -8,6 +8,7 @@ import { ENV } from '@/helper/env';
 import { sendHttp } from '@/helper/send-http';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, useDeferredValue, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface ProfileProps {}
 
@@ -44,7 +45,7 @@ const Profile: FunctionComponent<ProfileProps> = () => {
         });
         setLoading(false);
         if (!res.success) {
-            alert(res.message);
+            toast(res.message, { type: "error" });
             return;
         }
         localStorage.setItem("jit", res.data.token);
@@ -58,7 +59,7 @@ const Profile: FunctionComponent<ProfileProps> = () => {
                     e.preventDefault();
                     login();
                 }}
-                className="grid grid-cols-3 gap-8 rounded-lg border p-4 w-96"
+                className="grid grid-cols-3 gap-8 rounded-lg border px-8 py-4"
             >
                 <span className="col-span-full text-center text-2xl font-semibold text-primary">Login</span>
                 <label className="dai-form-control col-span-full">

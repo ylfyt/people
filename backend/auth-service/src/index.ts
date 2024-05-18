@@ -51,12 +51,12 @@ function saveFile(file: Express.Multer.File, filename: string) {
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split("Bearer ")[1] ?? "";
     if (token === "") {
-        sendErrorResponse(res, 401, "invalid");
+        sendErrorResponse(res, 401, "unauthorized");
         return;
     }
     const claim = parsetJwtToken(token);
     if (!claim) {
-        sendErrorResponse(res, 401, "invalid");
+        sendErrorResponse(res, 401, "unauthorized");
         return;
     }
     res.locals.claim = claim;
@@ -82,12 +82,18 @@ const main = async () => {
         const user = await prisma.user.findFirst({ where: { id: claim.id } });
         if (!user) {
             console.log("user doesn't exist");
-            sendErrorResponse(res, 401, "invalid");
+            sendErrorResponse(res, 401, "unauthorized");
             return;
         }
         user.password = "";
         sendSuccessResponse(res, user);
     });
+
+    app.post("/logout", authMiddleware, async (req, res) => {
+        const claim = res.locals.claim as UserClaim
+        console.log("logout", claim);
+        sendSuccessResponse(res, true)
+    })
 
     app.post("/login", async (req, res) => {
         try {

@@ -42,7 +42,7 @@ const AuthContextProvider: FunctionComponent<AuthContextProviderProps> = ({ chil
         });
         setLoading(false);
         if (!res.success) {
-            if (res.message === "invalid") {
+            if (res.message === "unauthorized") {
                 localStorage.removeItem("jit");
                 return;
             }

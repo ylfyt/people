@@ -58,7 +58,7 @@ const Profile: FunctionComponent<ProfileProps> = () => {
                     e.preventDefault();
                     login();
                 }}
-                className="grid grid-cols-3 gap-8 rounded-lg border p-4"
+                className="grid grid-cols-3 gap-8 rounded-lg border p-4 w-96"
             >
                 <span className="col-span-full text-center text-2xl font-semibold text-primary">Login</span>
                 <label className="dai-form-control col-span-full">

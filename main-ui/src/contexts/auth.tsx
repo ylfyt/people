@@ -10,10 +10,14 @@ import { toast } from 'react-toastify';
 export type AuthContextData = {
     user?: User;
     setUser: Dispatch<SetStateAction<User | undefined>>;
+    openModalLogout: boolean;
+    setOpenModalLogout: Dispatch<SetStateAction<boolean>>;
 };
 
 const AuthContext = createContext<AuthContextData>({
-    setUser() {}
+    setUser() {},
+    setOpenModalLogout() {},
+    openModalLogout: false
 });
 
 interface AuthContextProviderProps {
@@ -25,6 +29,7 @@ const AuthContextProvider: FunctionComponent<AuthContextProviderProps> = ({ chil
 
     const [user, setUser] = useState<User | undefined>();
     const [loading, setLoading] = useState(true);
+    const [openModalLogout, setOpenModalLogout] = useState(false);
 
     const getPersonalInfo = async () => {
         if (!localStorage.getItem("jit")?.length) {
@@ -55,7 +60,7 @@ const AuthContextProvider: FunctionComponent<AuthContextProviderProps> = ({ chil
         showLoading(loading);
     }, [loading]);
     return (
-        <AuthContext.Provider value={{ user, setUser }}>
+        <AuthContext.Provider value={{ user, setUser, openModalLogout, setOpenModalLogout }}>
             {!loading && children}
         </AuthContext.Provider>
     );

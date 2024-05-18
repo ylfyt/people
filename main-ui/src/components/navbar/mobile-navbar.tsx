@@ -5,6 +5,7 @@ import { Icon } from '@iconify/react';
 import { useRootContext } from '@/contexts/root';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuthContext } from '@/contexts/auth';
 
 type Route = {
     icon: string;
@@ -34,6 +35,7 @@ interface MobileNavbarProps {}
 
 const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
     const { darkMode, setDarkMode, navbarTitle } = useRootContext();
+    const { setOpenModalLogout } = useAuthContext();
     const pathname = usePathname();
 
     const [expand, setExpand] = useState(false);
@@ -97,7 +99,10 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
                                 <img className="size-12 rounded-full" src="/profile.jpg" alt="" />
                                 <span className="font-medium">Yudi Alfayat</span>
                             </span>
-                            <button className="dai-btn dai-btn-error dai-btn-sm text-xl">
+                            <button onClick={() => {
+                                setOpenModalLogout(true);
+                                setExpand(false);
+                            }} className="dai-btn dai-btn-error dai-btn-sm text-xl">
                                 <Icon icon="mingcute:exit-fill" />
                             </button>
                         </div>

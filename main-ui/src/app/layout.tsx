@@ -10,8 +10,8 @@ import { ToastContainer } from 'react-toastify';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-    title: 'Management',
-    description: 'Management',
+    title: 'People',
+    description: 'People',
 };
 
 export default function RootLayout({

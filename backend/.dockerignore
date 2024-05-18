@@ -2,3 +2,5 @@ dist
 node_modules
 /uploads/*
 !/uploads/README.md
+.git
+.env

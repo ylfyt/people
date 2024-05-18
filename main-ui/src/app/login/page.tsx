@@ -90,7 +90,7 @@ const Profile: FunctionComponent<ProfileProps> = () => {
                     />
                 </label>
                 <div className="col-span-full flex items-center justify-center">
-                    <LoadingButton disabled={disableForm} className='dai-btn-primary'>Submit</LoadingButton>
+                    <LoadingButton loading={loading} disabled={disableForm} className='dai-btn-primary'>Submit</LoadingButton>
                 </div>
             </form>
         </div>

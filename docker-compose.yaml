@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123123
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -21,19 +21,19 @@ services:
       JWT_SECRET_KEY: dkasndksandkasndksnkdsanksadnkn3knk
       PORT: 3000
     ports:
-      - "4000:3000"
+      - "3001:3000"
     depends_on:
       - postgres
 
   main-ui:
-    build: 
+    build:
       context: ./main-ui/
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_BASE_URL=http://localhost:4000/api
+        - NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
     restart: always
     ports:
-      - "8080:3000"
+      - "3002:3000"
     depends_on:
       - backend
 

@@ -1,4 +1,5 @@
 dist
+/next-main/node_modules
 node_modules
 /uploads/*
 !/uploads/README.md

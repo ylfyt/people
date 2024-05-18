@@ -14,6 +14,7 @@ import { ZOD_USER_REGISTER } from './zods/zod-user-register.js';
 import { sendErrorResponse, sendSuccessResponse } from './helper/send-response.js';
 import cors from 'cors';
 import { ZOD_USER_UPDATE } from './zods/zod-user-update.js';
+import { ZOD_USER_CHANGE_PASSWORD } from './zods/zod-user-change-password.js';
 
 const TOKEN_EXPIRY = 2 * 60 * 60;
 const JWT_SECRET_KEY = 'your_secret_key';
@@ -101,8 +102,9 @@ const main = async () => {
     app.put("/user/:id", authMiddleware, upload.single("picture"), async (req, res) => {
         try {
             const id = parseInt(req.params.id);
-            if (isNaN(id)) {
-                sendErrorResponse(res, 400, "Invalid id");
+            const claim = res.locals.claim as UserClaim;
+            if (id !== claim.id) {
+                sendErrorResponse(res, 401, "unauthorized");
                 return;
             }
 
@@ -111,10 +113,9 @@ const main = async () => {
                 sendErrorResponse(res, 400, "Data is not valid");
                 return;
             }
-            const claim = res.locals.claim as UserClaim;
 
             const user = await prisma.user.findFirst({
-                where: { id: claim.id }
+                where: { id }
             });
             if (!user) {
                 sendErrorResponse(res, 400, "User doesn't exist");
@@ -137,13 +138,51 @@ const main = async () => {
                 picturePath = `${STATIC_DIR}/${filename}`;
             }
             const updatedUser = await prisma.user.update({
-                where: {
-                    id: claim.id
-                },
+                where: { id },
                 data: {
                     phone: body.data.phone,
                     profil_pic_url: picturePath
                 }
+            });
+            updatedUser.password = "";
+            sendSuccessResponse(res, updatedUser);
+        } catch (error) {
+            console.log("error", error);
+            sendErrorResponse(res, 500, "Internal server error");
+        }
+    });
+
+    app.put("/user/:id/change-password", authMiddleware, async (req, res) => {
+        try {
+            const id = parseInt(req.params.id);
+            const claim = res.locals.claim as UserClaim;
+            if (id !== claim.id) {
+                sendErrorResponse(res, 401, "unauthorized");
+                return;
+            }
+            const body = ZOD_USER_CHANGE_PASSWORD.safeParse(req.body);
+            if (!body.success) {
+                console.log(body.error.errors);
+                sendErrorResponse(res, 400, "Data is not valid");
+                return;
+            }
+            const user = await prisma.user.findFirst({
+                where: { id }
+            });
+            if (!user) {
+                sendErrorResponse(res, 404, "User not found");
+                return;
+            }
+            const valid = await bcrypt.compare(body.data.password, user.password);
+            if (!valid) {
+                console.log('invalid password');
+                sendErrorResponse(res, 400, "invalid password");
+                return;
+            }
+            const hashedPassword = await bcrypt.hash(body.data.newPassword, 10);
+            const updatedUser = await prisma.user.update({
+                where: { id },
+                data: { password: hashedPassword }
             });
             updatedUser.password = "";
             sendSuccessResponse(res, updatedUser);

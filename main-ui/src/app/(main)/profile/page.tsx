@@ -124,7 +124,7 @@ const Profile: FunctionComponent<StudentProps> = () => {
                     Submit
                 </LoadingButton>
             )}
-            {changePassword && <FormChangePassword />}
+            {changePassword && <FormChangePassword setChangePassword={setChangePassword} />}
             {!edit && !changePassword && (
                 <button onClick={() => setChangePassword(true)} className="dai-btn dai-btn-primary mt-8">
                     Change Password

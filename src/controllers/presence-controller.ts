@@ -11,7 +11,7 @@ const app = express.Router();
 
 export { app as presenceController };
 
-app.get("/", authMiddleware, async (req, res) => {
+app.get("/", authMiddleware(), async (req, res) => {
     try {
         let start = !req.query.start?.length ? undefined : new Date(req.query.start as string);
         if (start && isNaN(start.getTime())) {
@@ -54,7 +54,7 @@ app.get("/", authMiddleware, async (req, res) => {
     }
 });
 
-app.get("/last", authMiddleware, async (req, res) => {
+app.get("/last", authMiddleware(), async (req, res) => {
     try {
         const claim = res.locals.claim as UserClaim;
         const presence = await prisma.presence.findFirst({
@@ -81,7 +81,7 @@ app.get("/last", authMiddleware, async (req, res) => {
     }
 });
 
-app.post("/", authMiddleware, async (req, res) => {
+app.post("/", authMiddleware(), async (req, res) => {
     try {
         const type: string = req.body.type ?? '';
         if (!Object.keys(PresenceTypes).includes(type)) {

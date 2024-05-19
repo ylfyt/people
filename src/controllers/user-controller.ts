@@ -22,7 +22,17 @@ const app = express.Router();
 
 export { app as userController };
 
-app.get("/me", authMiddleware, async (req, res) => {
+app.get("/", authMiddleware("ADMIN"), async (req, res) => {
+    try {
+        const users = await prisma.user.findMany();
+        sendSuccessResponse(res, users);
+    } catch (error) {
+        console.log("error", error);
+        sendErrorResponse(res, 500, "Internal server error");
+    }
+});
+
+app.get("/me", authMiddleware(), async (req, res) => {
     const claim = res.locals.claim as UserClaim;
 
     const user = await prisma.user.findFirst({ where: { id: claim.id } });
@@ -35,13 +45,13 @@ app.get("/me", authMiddleware, async (req, res) => {
     sendSuccessResponse(res, user);
 });
 
-app.post("/logout", authMiddleware, async (req, res) => {
+app.post("/logout", authMiddleware(), async (req, res) => {
     const claim = res.locals.claim as UserClaim;
     console.log("logout", claim);
     sendSuccessResponse(res, true);
 });
 
-app.put("/:id", authMiddleware, upload.single("picture"), async (req, res) => {
+app.put("/:id", authMiddleware(), upload.single("picture"), async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const claim = res.locals.claim as UserClaim;
@@ -95,7 +105,7 @@ app.put("/:id", authMiddleware, upload.single("picture"), async (req, res) => {
 });
 
 
-app.put("/:id/change-password", authMiddleware, async (req, res) => {
+app.put("/:id/change-password", authMiddleware(), async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const claim = res.locals.claim as UserClaim;
@@ -152,10 +162,10 @@ app.post("/login", async (req, res) => {
             sendErrorResponse(res, 400, "Email or password is wrong");
             return;
         }
-        const isAdmin = req.query.role === UserRole.ADMIN
+        const isAdmin = req.query.role === UserRole.ADMIN;
         if (isAdmin && user.role !== UserRole.ADMIN) {
-            sendErrorResponse(res, 403, "Forbidden")
-            return
+            sendErrorResponse(res, 403, "Forbidden");
+            return;
         }
         const valid = await bcrypt.compare(body.data.password, user.password);
         if (!valid) {
@@ -165,7 +175,8 @@ app.post("/login", async (req, res) => {
         }
         const token = generateJwtToken({
             email: user.email,
-            id: user.id
+            id: user.id,
+            role: user.role
         }, ENV.JWT_SECRET_KEY);
         user.password = "";
         sendSuccessResponse<UserLoginDto>(res, { duration: TOKEN_EXPIRY, user, token: token });

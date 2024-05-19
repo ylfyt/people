@@ -37,7 +37,7 @@ const RootProvider: FC<RootProviderProps> = ({ children }) => {
 
     useEffect(() => {
         type ThemeOptions = keyof typeof CustomColorScheme;
-        const themeName: ThemeOptions = darkMode ? 'darkScheme' : 'lightRetro';
+        const themeName: ThemeOptions = darkMode ? 'darkScheme' : 'lightScheme';
         document.documentElement.setAttribute('data-theme', themeName);
     }, [darkMode]);
     return (

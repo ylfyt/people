@@ -109,7 +109,7 @@ const Home: FunctionComponent<HomeProps> = () => {
                                 loading ? (
                                     Array.from({ length: 10 }).map((_, idx) => {
                                         return (
-                                            <tr>
+                                            <tr key={idx}>
                                                 <td><p className='dai-skeleton w-8 h-6'></p></td>
                                                 <td><p className='dai-skeleton size-12 rounded-full'></p></td>
                                                 <td><p className='dai-skeleton w-36 h-6'></p></td>

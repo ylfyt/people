@@ -42,7 +42,7 @@ RUN apk add --no-cache tzdata
 ENV TZ Asia/Jakarta
 
 ENV ADMIN_BASE_PATH /admin
-ENV PORT 3000
+ENV PORT 3001
 ENV JWT_SECRET_KEY daksndksndknsakdsandksanduqwnekasdnkasn
 ENV ENV_MODE PROD
 ENV NODE_ENV production

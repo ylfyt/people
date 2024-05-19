@@ -86,8 +86,8 @@ const main = async () => {
 
     console.log(ENV);
 
-    app.listen(ENV.PORT || 4000, () => {
-        console.log(`App listening on port ${ENV.PORT || 4000}`);
+    app.listen(ENV.PORT || 3001, () => {
+        console.log(`App listening on http://localhost:${ENV.PORT || 3001}`);
     });
 };
 

@@ -18,8 +18,9 @@ services:
     restart: always
     environment:
       DATABASE_URL: postgres://postgres:123123@postgres:5432/db_people
+      PORT: 3001
     ports:
-      - "3000:3000"
+      - "3001:3001"
     depends_on:
       - postgres
 

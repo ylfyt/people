@@ -4,7 +4,7 @@ import { authMiddleware } from '../middlewares/auth-middleware.js';
 import { prisma } from '../prisma.js';
 import { sendErrorResponse, sendSuccessResponse } from '../helper/send-response.js';
 import multer from 'multer';
-import { ZOD_USER_UPDATE } from '../zods/zod-user-update.js';
+import { ZOD_USER_UPDATE, ZOD_USER_UPDATE_ADMIN } from '../zods/zod-user-update.js';
 import { getFileExtension } from '../helper/get-file-extension.js';
 import { saveFile } from '../helper/save-file.js';
 import { STATIC_DIR, TOKEN_EXPIRY } from '../contants.js';
@@ -108,6 +108,54 @@ app.put("/:id", authMiddleware(), upload.single("picture"), async (req, res) => 
     }
 });
 
+app.put("/:id/admin", authMiddleware("ADMIN"), upload.single("picture"), async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+
+        const body = ZOD_USER_UPDATE_ADMIN.safeParse(JSON.parse(req.body.data ?? '{}'));
+        if (!body.success) {
+            sendErrorResponse(res, 400, "Data is not valid");
+            return;
+        }
+
+        const user = await prisma.user.findFirst({
+            where: { id }
+        });
+        if (!user) {
+            sendErrorResponse(res, 400, "User doesn't exist");
+            return;
+        }
+        let picturePath = user.profil_pic_url;
+        if (req.file) {
+            const ACCEPTED_EXT = ["png", "jpg", "jpeg"];
+            const ext = getFileExtension(req.file.originalname ?? '');
+            if (!ACCEPTED_EXT.includes(ext)) {
+                sendErrorResponse(res, 400, "Invalid file type");
+                return;
+            }
+            const filename = `${user.email}_${new Date().getTime()}.${ext}`;
+            const success = saveFile(req.file, STATIC_DIR, filename);
+            if (!success) {
+                sendErrorResponse(res, 500, "Internal server error");
+                return;
+            }
+            picturePath = `${STATIC_DIR}/${filename}`;
+        }
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: {
+                ...body.data,
+                profil_pic_url: picturePath
+            }
+        });
+        updatedUser.password = "";
+        sendSuccessResponse(res, updatedUser);
+    } catch (error) {
+        console.log("error", error);
+        sendErrorResponse(res, 500, "Internal server error");
+    }
+});
+
 
 app.put("/:id/change-password", authMiddleware(), async (req, res) => {
     try {
@@ -191,7 +239,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.post("/", upload.single("picture"), async (req, res) => {
+app.post("/", authMiddleware("ADMIN"), upload.single("picture"), async (req, res) => {
     try {
         const payload = ZOD_USER_REGISTER.safeParse(JSON.parse(req.body.data ?? '{}'));
         if (!payload.success) {

@@ -6,12 +6,13 @@ import { Icon } from '@iconify/react';
 
 interface UserCadProps {
     user: User;
+    onEdit?: () => void;
 }
 
-const UserCad: FunctionComponent<UserCadProps> = ({ user }) => {
+const UserCad: FunctionComponent<UserCadProps> = ({ user, onEdit }) => {
     return (
         <div className="flex relative flex-col gap-2 rounded-lg border bg-base-200 p-5 shadow">
-            <button className='dai-btn dai-btn-xs dai-btn-ghost absolute top-1 right-1'><Icon icon="fa:pencil" /></button>
+            <button onClick={onEdit} className='dai-btn dai-btn-xs dai-btn-ghost absolute top-1 right-1'><Icon icon="fa:pencil" /></button>
             <div className="flex items-center justify-between">
                 <div className='flex items-center gap-2'>
                     <img className='size-10 rounded-full' src={`${ENV.API_BASE_URL}/${user.profil_pic_url}`} alt="" />

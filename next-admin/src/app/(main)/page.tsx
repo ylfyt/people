@@ -23,6 +23,7 @@ const Home: FunctionComponent<HomeProps> = () => {
     const [loading, setLoading] = useState(false);
 
     const [query, setQuery] = useState("");
+    const [updateUser, setUpdateUser] = useState<User>();
 
     useEffect(() => {
         setNavbarTitle('Home');
@@ -77,12 +78,12 @@ const Home: FunctionComponent<HomeProps> = () => {
                             <span className='text-center mt-4'>No data</span> :
                             showedUsers.map((el, idx) => {
                                 return (
-                                    <UserCad user={el} key={idx} />
+                                    <UserCad onEdit={() => { setUpdateUser(el); setOpenModal(true); }} user={el} key={idx} />
                                 );
                             })
                 }
             </div>
-            {openModal && <ModalCreateUser onSuccess={getUsers} open={openModal} setOpen={setOpenModal} />}
+            {openModal && <ModalCreateUser updateUser={updateUser} onSuccess={getUsers} open={openModal} setOpen={setOpenModal} />}
         </div>
     );
 };

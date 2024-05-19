@@ -6,7 +6,7 @@ interface UserCardSkeletonProps {
 
 const UserCardSkeleton: FunctionComponent<UserCardSkeletonProps> = () => {
     return (
-        <div className="flex flex-col gap-2 rounded-lg border bg-base-200 p-4 shadow">
+        <div className="flex flex-col gap-2 rounded-lg border bg-base-200 p-5 shadow">
             <div className="flex items-center justify-between">
                 <div className='flex items-center gap-2'>
                     <div className='size-10 rounded-full dai-skeleton'></div>

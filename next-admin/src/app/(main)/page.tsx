@@ -11,11 +11,15 @@ import { toast } from 'react-toastify';
 import { Icon } from '@iconify/react';
 import ModalCreateUser from '@/components/modal-create-user';
 import { formatDate } from '@/helper/format-date';
+import { useAuthContext } from '@/contexts/auth';
+import { LoadingButton } from '@/components/loading-button';
 
 interface HomeProps {}
 
 const Home: FunctionComponent<HomeProps> = () => {
-    const { setNavbarTitle } = useRootContext();
+    const { user } = useAuthContext();
+
+    const { setNavbarTitle, showLoading } = useRootContext();
 
     const [openModal, setOpenModal] = useState(false);
 
@@ -55,6 +59,24 @@ const Home: FunctionComponent<HomeProps> = () => {
             return;
         }
         setShowedUsers(users.filter(el => `${el.name} ${el.email} ${el.position}`.toLowerCase().includes(query.toLowerCase())));
+    };
+
+    const deleteUser = async (id: number) => {
+        const confirmed = confirm("Are you sure to delete this user, all data will be deleted?");
+        if (!confirmed) return;
+
+        showLoading(true);
+        const res = await sendHttp({
+            url: `${ENV.API_BASE_URL}/user/${id}`,
+            method: "delete"
+        });
+        showLoading(false);
+        if (!res.success) {
+            toast(res.message, { type: "error" });
+            return;
+        }
+        toast("Successfully delete user", { type: "success" });
+        getUsers();
     };
 
     return (
@@ -120,9 +142,14 @@ const Home: FunctionComponent<HomeProps> = () => {
                                                     <td>{el.phone}</td>
                                                     <td>{formatDate(el.createdAt, {})}</td>
                                                     <td>
-                                                        <button onClick={() => { setUpdateUser(el); setOpenModal(true); }} className='dai-btn dai-btn-sm'>
-                                                            <Icon icon="fa:pencil" />
-                                                        </button>
+                                                        <div className='flex items-center gap-2 flex-wrap'>
+                                                            <button onClick={() => { setUpdateUser(el); setOpenModal(true); }} className='dai-btn dai-btn-sm dai-btn-warning'>
+                                                                <Icon icon="fa:pencil" />
+                                                            </button>
+                                                            <LoadingButton onClick={() => deleteUser(el.id)} disabled={el.id === user?.id} size='sm' className='dai-btn-error'>
+                                                                <Icon icon="fa:trash" />
+                                                            </LoadingButton>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             );

@@ -6,6 +6,7 @@ import { useRootContext } from '@/contexts/root';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthContext } from '@/contexts/auth';
+import { ENV } from '@/helper/env';
 
 type Route = {
     icon: string;
@@ -20,11 +21,6 @@ const routes: Route[] = [
         text: 'Home',
     },
     {
-        icon: 'fa:user',
-        url: '/profile',
-        text: 'Profile',
-    },
-    {
         icon: 'fa:file-text',
         url: '/report',
         text: 'Report',
@@ -35,6 +31,7 @@ interface MobileNavbarProps {}
 
 const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
     const { darkMode, setDarkMode, navbarTitle } = useRootContext();
+    const { user } = useAuthContext();
     const { setOpenModalLogout } = useAuthContext();
     const pathname = usePathname();
 
@@ -92,7 +89,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
                         <hr className="border" />
                         <div className="flex items-center justify-between px-4 py-2">
                             <span className="flex items-center gap-2">
-                                <img className="size-12 rounded-full" src="/profile.jpg" alt="" />
+                                <img className="size-12 rounded-full" src={`${ENV.API_BASE_URL}/${user?.profil_pic_url}`} alt="" />
                                 <span className="font-medium">Yudi Alfayat</span>
                             </span>
                             <button onClick={() => {

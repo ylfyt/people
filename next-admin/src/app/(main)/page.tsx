@@ -10,6 +10,7 @@ import { FunctionComponent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Icon } from '@iconify/react';
 import ModalCreateUser from '@/components/modal-create-user';
+import { formatDate } from '@/helper/format-date';
 
 interface HomeProps {}
 
@@ -59,13 +60,77 @@ const Home: FunctionComponent<HomeProps> = () => {
     return (
         <div className="min-h-[75dvh] space-y-4">
             <div className='mx-4 flex items-center gap-2'>
-                <label className="dai-input dai-input-bordered dai-input-sm w-full flex items-center gap-2">
+                <label className="dai-input dai-input-bordered dai-input-sm w-full md:w-80 flex items-center gap-2">
                     <input value={query} onChange={(e) => setQuery(e.target.value)} type="text" className="grow" placeholder="Search" />
                     <Icon icon="fa:search" />
                 </label>
                 <button onClick={() => setOpenModal(true)} className='dai-btn dai-btn-sm dai-btn-primary'>New</button>
             </div>
-            <div className='grid sm:hidden grid-cols-1 gap-2 px-4'>
+            <div className='mx-4 hidden md:block border rounded-lg'>
+                <div className="overflow-x-auto">
+                    <table className="dai-table">
+                        <thead>
+                            <tr>
+                                <th className='w-12'></th>
+                                <th className='w-24'>Picture</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Position</th>
+                                <th>Role</th>
+                                <th>Phone</th>
+                                <th>Modified At</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                loading ? (
+                                    Array.from({ length: 10 }).map((_, idx) => {
+                                        return (
+                                            <tr>
+                                                <td><p className='dai-skeleton w-8 h-6'></p></td>
+                                                <td><p className='dai-skeleton size-12 rounded-full'></p></td>
+                                                <td><p className='dai-skeleton w-36 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-24 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-24 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-8 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-24 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-8 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-8 h-6'></p></td>
+                                            </tr>
+                                        );
+                                    })
+                                )
+                                    : showedUsers.length === 0 ?
+                                        <tr><td colSpan={5} className='text-center'>No data</td></tr>
+                                        :
+                                        showedUsers.map((el, idx) => {
+                                            return (
+                                                <tr key={idx} className="dai-hover">
+                                                    <th>{idx + 1}</th>
+                                                    <td>
+                                                        <img className='size-12 rounded-full' src={`${ENV.API_BASE_URL}/${el.profil_pic_url}`} alt="" />
+                                                    </td>
+                                                    <td>{el.name}</td>
+                                                    <td>{el.email}</td>
+                                                    <td>{el.position}</td>
+                                                    <td>{el.role}</td>
+                                                    <td>{el.phone}</td>
+                                                    <td>{formatDate(el.createdAt, {})}</td>
+                                                    <td>
+                                                        <button onClick={() => { setUpdateUser(el); setOpenModal(true); }} className='dai-btn dai-btn-sm'>
+                                                            <Icon icon="fa:pencil" />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div className='grid md:hidden grid-cols-1 gap-2 px-4'>
                 {
                     loading ?
                         Array.from({ length: 5 }).map((_, idx) => {

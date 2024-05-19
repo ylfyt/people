@@ -46,7 +46,7 @@ docker build -t people .
 docker run -d --name people-container --network db_network -p 3001:3001 -e DATABASE_URL=postgresql://<USERNAME>:<PASSWORD>@<POSTGRES_HOST>:5432/db_people people
 ```
 
-Please make sure the connection string variable "DATABASE_URL" is correct!
+Please make sure the connection string variable "DATABASE_URL" is correct. "db_network" is docker network for the postgresql database.
 
 #### 3. Using NodeJS
 
@@ -75,13 +75,20 @@ Please make sure the connection string variable "DATABASE_URL" is correct!
 
 1. Backend (root directory)
    ```bash
-    npm install && npm run dev
+    npm install 
+    npx prisma migrate deploy
+    npm run build
+    npm run start
    ```
 2. User App ("next-main" directory)
    ```bash
-   npm install && npm run dev
+   cd next-main
+   npm install
+   npm run dev
    ```
 3. Admin Panel ("next-admin" directory)
    ```bash
-   npm install && npm run dev
+   cd next-admin
+   npm install
+   npm run dev
    ```

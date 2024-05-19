@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { STATIC_DIR } from './contants.js';
 import { userController } from './controllers/user-controller.js';
@@ -10,23 +10,12 @@ import fs from 'fs';
 const MAIN_STATIC_DIR = !ENV.IS_PROD ? "next-main/dist" : "dist-ui";
 const ADMIN_STATIC_DIR = !ENV.IS_PROD ? "next-admin/dist" : "dist-admin";
 
-const main = async () => {
-    const app = express();
+const spaHandler = (staticDir: string, basePath: string) => {
+    const escapedBasePath = basePath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`^${escapedBasePath}`);
 
-    app.use(cors({ origin: "*" }));
-    app.use("/api/uploads", express.static(STATIC_DIR));
-    app.use(express.json());
-
-    app.get('/api', (req, res) => {
-        res.send('Hello World!');
-    });
-
-    app.use("/api/user", userController);
-    app.use("/api/presence", presenceController);
-
-    // SPA Handler
-    app.get('*', async function (req, res) {
-        const target = path.join(MAIN_STATIC_DIR, req.path);
+    return async (req: Request, res: Response) => {
+        const target = path.join(staticDir, req.path.replace(regex, ""));
         let isExist = true;
         let isDirectory = false;
         try {
@@ -43,11 +32,30 @@ const main = async () => {
             isExist = false;
         }
         if (!isExist || isDirectory) {
-            res.sendFile(path.join(process.cwd(), MAIN_STATIC_DIR, "index.html"));
+            res.sendFile(path.join(process.cwd(), staticDir, "index.html"));
             return;
         }
         res.sendFile(path.join(process.cwd(), target));
+    };
+};
+
+const main = async () => {
+    const app = express();
+
+    app.use(cors({ origin: "*" }));
+    app.use("/api/uploads", express.static(STATIC_DIR));
+    app.use(express.json());
+
+    app.get('/api', (req, res) => {
+        res.send('Hello World!');
     });
+
+    app.use("/api/user", userController);
+    app.use("/api/presence", presenceController);
+
+    if (ENV.ADMIN_BASE_PATH.length > 1)
+        app.get(`${ENV.ADMIN_BASE_PATH}*`, spaHandler(ADMIN_STATIC_DIR, ENV.ADMIN_BASE_PATH));
+    app.get('*', spaHandler(MAIN_STATIC_DIR, ""));
 
     console.log(ENV);
 

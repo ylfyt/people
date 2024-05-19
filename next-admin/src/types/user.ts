@@ -6,6 +6,8 @@ export type User = {
     phone: string;
     position: string;
     role: UserRole;
+    createdAt: string;
+    updatedAt?: string;
 };
 
 export type UserRole = "ADMIN" | "USER";

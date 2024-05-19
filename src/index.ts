@@ -6,6 +6,7 @@ import { ENV } from './helper/env.js';
 import { presenceController } from './controllers/presence-controller.js';
 import path from 'path';
 import fs from 'fs';
+import { prisma } from './prisma.js';
 
 const MAIN_STATIC_DIR = !ENV.IS_PROD ? "next-main/dist" : "dist-ui";
 const ADMIN_STATIC_DIR = !ENV.IS_PROD ? "next-admin/dist" : "dist-admin";
@@ -39,7 +40,33 @@ const spaHandler = (staticDir: string, basePath: string) => {
     };
 };
 
+const initUser = async () => {
+    try {
+        const anyAdmin = await prisma.user.findFirst({ where: { role: "ADMIN" } });
+        if (anyAdmin) {
+            return;
+        }
+        const user = await prisma.user.create({
+            data: {
+                email: "admin@example.com",
+                name: "Admin Example",
+                password: "$2a$10$9vmoD394c9tU.1sfUz3pEuWqW.lfss9TtF9IUpIbp2cCib4mIeviG", // 123123
+                phone: "+6212345678901",
+                position: "DEVELOPER",
+                profil_pic_url: "",
+                role: "ADMIN",
+            }
+        });
+        user.password = "123123";
+        console.log("USER SAMPLE===========", user);
+    } catch (error) {
+        console.log("ERROR", error);
+    }
+};
+
 const main = async () => {
+    await initUser();
+
     const app = express();
 
     app.use(cors({ origin: "*" }));

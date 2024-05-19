@@ -11,31 +11,17 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
 
-  backend:
-    build: ./backend/
+  people:
+    build: ./
     restart: always
     environment:
       DATABASE_URL: postgres://postgres:123123@postgres:5432/db_people
-      JWT_SECRET_KEY: dkasndksandkasndksnkdsanksadnkn3knk
-      PORT: 3000
     ports:
-      - "3001:3000"
+      - "3000:3000"
     depends_on:
       - postgres
 
-  main-ui:
-    build:
-      context: ./main-ui/
-      dockerfile: Dockerfile
-      args:
-        - NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
-    restart: always
-    ports:
-      - "3002:3000"
-    depends_on:
-      - backend
-
 volumes:
-  postgres_data:
+  postgres-data:

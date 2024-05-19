@@ -15,6 +15,7 @@ import { UserLoginDto } from '../dtos/login.js';
 import { generateJwtToken } from '../helper/generate-jwt.js';
 import { ENV } from '../helper/env.js';
 import { ZOD_USER_REGISTER } from '../zods/zod-user-register.js';
+import { UserRole } from '@prisma/client';
 
 const upload = multer();
 const app = express.Router();
@@ -150,6 +151,11 @@ app.post("/login", async (req, res) => {
         if (!user) {
             sendErrorResponse(res, 400, "Email or password is wrong");
             return;
+        }
+        const isAdmin = req.query.role === UserRole.ADMIN
+        if (isAdmin && user.role !== UserRole.ADMIN) {
+            sendErrorResponse(res, 403, "Forbidden")
+            return
         }
         const valid = await bcrypt.compare(body.data.password, user.password);
         if (!valid) {

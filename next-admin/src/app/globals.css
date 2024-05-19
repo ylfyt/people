@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .border,
+    .border-2,
+    .border-3,
+    .border-4 {
+        @apply border-base-300;
+    }
+
+    .border-t,
+    .border-t-2,
+    .border-t-3,
+    .border-t-4 {
+        @apply border-base-300;
+    }
+
+    .border-r,
+    .border-r-2,
+    .border-r-3,
+    .border-r-4 {
+        @apply border-base-300;
+    }
+
+    .border-b,
+    .border-b-2,
+    .border-b-3,
+    .border-b-4 {
+        @apply border-base-300;
+    }
+
+    .border-l,
+    .border-l-2,
+    .border-l-3,
+    .border-l-4 {
+        @apply border-base-300;
+    }
+}
+
+@layer components {
+    .req {
+        @apply after:text-red-500 after:content-['_*'];
+    }
+    .resp-dbg {
+        @apply bg-red-500 sm:bg-green-500 md:bg-orange-500 xl:bg-blue-500;
+    }
+}

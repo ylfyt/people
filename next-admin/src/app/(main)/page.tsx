@@ -64,7 +64,7 @@ const Home: FunctionComponent<HomeProps> = () => {
                     <input value={query} onChange={(e) => setQuery(e.target.value)} type="text" className="grow" placeholder="Search" />
                     <Icon icon="fa:search" />
                 </label>
-                <button onClick={() => setOpenModal(true)} className='dai-btn dai-btn-sm dai-btn-primary'>New</button>
+                <button onClick={() => { setUpdateUser(undefined); setOpenModal(true); }} className='dai-btn dai-btn-sm dai-btn-primary'>New</button>
             </div>
             <div className='mx-4 hidden md:block border rounded-lg'>
                 <div className="overflow-x-auto">

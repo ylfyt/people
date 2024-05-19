@@ -33,14 +33,29 @@ app.get("/", authMiddleware(), async (req, res) => {
         end.setHours(0, 0, 0, 0);
 
         const claim = res.locals.claim as UserClaim;
+
+        const allUser = req.query.allUser === "true";
+        if (allUser && claim.role !== "ADMIN") {
+            sendErrorResponse(res, 401, "unauthorized");
+            return;
+        }
+
         const presences = await prisma.presence.findMany({
             where: {
-                userId: claim.id,
+                userId: allUser ? undefined : claim.id,
                 enterDate: {
                     gte: start
                 },
                 modifiedAt: {
                     lt: end
+                }
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
                 }
             },
             orderBy: {

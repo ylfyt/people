@@ -10,4 +10,9 @@ export type User = {
     updatedAt?: string;
 };
 
+export type UserShort = {
+    id: number;
+    name: string;
+};
+
 export type UserRole = "ADMIN" | "USER";

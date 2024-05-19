@@ -16,11 +16,14 @@ export const DailyPresenceCard: FunctionComponent<DailyPresenceCardProps> = ({ p
     return (
         <div className="flex flex-col gap-4 rounded-lg border bg-base-200 p-4 shadow">
             <div className="flex items-center justify-between">
-                <span className="text-xl font-semibold">{date}</span>
-                {
-                    presence.exitDate &&
-                    <span className="italic">{dateDiffHour(presence.enterDate, presence.exitDate)} hrs</span>
-                }
+                <span className="text-lg font-semibold">{presence.user?.name ?? "-"}</span>
+                <div className='flex items-center gap-1'>
+                    <span className="text-sm font-semibold">{date}</span>
+                    {
+                        presence.exitDate &&
+                        <span className="text-sm">({dateDiffHour(presence.enterDate, presence.exitDate)} hrs)</span>
+                    }
+                </div>
             </div>
             <div className="flex items-center justify-between">
                 <span className="dai-badge dai-badge-success dai-badge-lg gap-1">

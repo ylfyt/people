@@ -79,7 +79,7 @@ const ModalCreateUser: FunctionComponent<ModalCreateUserProps> = ({ open, setOpe
     return (
         <dialog
             open={open} onClose={() => setOpen(false)} className="dai-modal dai-modal-bottom sm:dai-modal-middle">
-            <div className="dai-modal-box">
+            <div className="dai-modal-box border">
                 <h3 className="font-bold text-lg">{updateUser ? "Update" : "Create"} User</h3>
                 <form onSubmit={(e) => { e.preventDefault(); submit(); }} className='grid grid-cols-1 gap-2'>
                     <label className="dai-form-control">

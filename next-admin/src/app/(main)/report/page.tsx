@@ -33,7 +33,7 @@ const Report: FunctionComponent<ReportProps> = () => {
     const getData = async (s: string, e: string) => {
         setLoading(true);
         const res = await sendHttp<Presence[]>({
-            url: `${ENV.API_BASE_URL}/presence?start=${s}&end=${e}`
+            url: `${ENV.API_BASE_URL}/presence?start=${s}&end=${e}&allUser=true`
         });
         setLoading(false);
         if (!res.success) {
@@ -85,6 +85,7 @@ const Report: FunctionComponent<ReportProps> = () => {
                         <thead>
                             <tr>
                                 <th className='w-12'></th>
+                                <th>User</th>
                                 <th>Date</th>
                                 <th>Enter</th>
                                 <th>Exit</th>
@@ -96,8 +97,9 @@ const Report: FunctionComponent<ReportProps> = () => {
                                 loading ? (
                                     Array.from({ length: 10 }).map((_, idx) => {
                                         return (
-                                            <tr>
+                                            <tr key={idx}>
                                                 <td><p className='dai-skeleton w-8 h-6'></p></td>
+                                                <td><p className='dai-skeleton w-36 h-6'></p></td>
                                                 <td><p className='dai-skeleton w-36 h-6'></p></td>
                                                 <td><p className='dai-skeleton w-24 h-6'></p></td>
                                                 <td><p className='dai-skeleton w-24 h-6'></p></td>
@@ -113,6 +115,7 @@ const Report: FunctionComponent<ReportProps> = () => {
                                             return (
                                                 <tr key={idx} className="dai-hover">
                                                     <th>{idx + 1}</th>
+                                                    <td>{el.user?.name ?? "-"}</td>
                                                     <td>{formatDate(el.enterDate, { onlyDate: true })}</td>
                                                     <td>{formatDate(el.enterDate, { onlyTime: true })}</td>
                                                     <td>{!el.exitDate ? "-" : formatDate(el.exitDate, { onlyTime: true })}</td>

@@ -29,6 +29,9 @@ RUN npm run build
 # =============================================
 FROM node:lts-alpine
 
+RUN apk add --no-cache tzdata
+ENV TZ Asia/Jakarta
+
 ENV PORT 3000
 ENV JWT_SECRET_KEY daksndksndknsakdsandksanduqwnekasdnkasn
 ENV ENV_MODE PROD

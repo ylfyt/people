@@ -38,5 +38,5 @@ model Presence {
     enterDate  DateTime
     exitDate   DateTime?
     modifiedAt DateTime
-    user       User      @relation(references: [id], fields: [userId])
+    user       User      @relation(references: [id], fields: [userId], onDelete: Cascade)
 }

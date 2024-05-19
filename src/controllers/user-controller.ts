@@ -29,6 +29,9 @@ app.get("/", authMiddleware("ADMIN"), async (req, res) => {
                 createdAt: "desc"
             }
         });
+        users.forEach(el => {
+            el.password = "";
+        });
         sendSuccessResponse(res, users);
     } catch (error) {
         console.log("error", error);
@@ -283,5 +286,35 @@ app.post("/", authMiddleware("ADMIN"), upload.single("picture"), async (req, res
     } catch (error) {
         console.log('error', error);
         sendErrorResponse(res, 400, "Internal server error");
+    }
+});
+
+app.delete("/:id", authMiddleware("ADMIN"), async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            sendErrorResponse(res, 400, "Invalid id");
+            return;
+        }
+        const claim = res.locals.claim as UserClaim;
+        if (claim.id === id) {
+            sendErrorResponse(res, 400, "Cannot delete your self");
+            return;
+        }
+
+        const user = await prisma.user.findFirst({
+            where: { id }
+        });
+        if (!user) {
+            sendErrorResponse(res, 404, "User not found");
+            return;
+        }
+        await prisma.user.delete({
+            where: { id },
+        });
+        sendSuccessResponse(res, true);
+    } catch (error) {
+        console.log("error", error);
+        sendErrorResponse(res, 500, "Internal server error");
     }
 });

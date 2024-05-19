@@ -49,6 +49,8 @@ const main = async () => {
         res.sendFile(path.join(process.cwd(), target));
     });
 
+    console.log(ENV);
+
     app.listen(ENV.PORT || 4000, () => {
         console.log(`App listening on port ${ENV.PORT || 4000}`);
     });

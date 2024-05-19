@@ -1,9 +1,13 @@
 dist
 /next-main/node_modules
+/next-admin/node_modules
 **/node_modules
 /next-main/dist
+/next-admin/dist
 /next-main/.next
+/next-admin/.next
 /next-main/.env
+/next-admin/.env
 node_modules
 /uploads/*
 !/uploads/README.md

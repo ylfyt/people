@@ -61,7 +61,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
                 >
                     <div className="ml-auto md:ml-0 md:mr-auto flex h-dvh w-3/4 sm:w-[20rem] flex-col justify-between bg-base-100">
                         <div className="flex items-center justify-between px-4 py-2">
-                            <h2 className="text-2xl font-semibold italic text-primary">Peoples</h2>
+                            <h2 className="text-2xl font-semibold italic text-primary">Admin Panel</h2>
                             <button
                                 onClick={() => setDarkMode((prev) => !prev)}
                                 className="dai-btn dai-btn-circle dai-btn-warning dai-btn-sm"

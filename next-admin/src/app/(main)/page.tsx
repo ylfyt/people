@@ -27,7 +27,7 @@ const Home: FunctionComponent<HomeProps> = () => {
     const [updateUser, setUpdateUser] = useState<User>();
 
     useEffect(() => {
-        setNavbarTitle('Home');
+        setNavbarTitle('Admin Panel');
 
         getUsers();
     }, []);
@@ -59,7 +59,7 @@ const Home: FunctionComponent<HomeProps> = () => {
 
     return (
         <div className="min-h-[75dvh] space-y-4">
-            <div className='mx-4 flex items-center gap-2'>
+            <div className='mx-4 py-2 flex items-center gap-2'>
                 <label className="dai-input dai-input-bordered dai-input-sm w-full md:w-80 flex items-center gap-2">
                     <input value={query} onChange={(e) => setQuery(e.target.value)} type="text" className="grow" placeholder="Search" />
                     <Icon icon="fa:search" />
@@ -114,7 +114,9 @@ const Home: FunctionComponent<HomeProps> = () => {
                                                     <td>{el.name}</td>
                                                     <td>{el.email}</td>
                                                     <td>{el.position}</td>
-                                                    <td>{el.role}</td>
+                                                    <td>
+                                                        <span className={`dai-badge ${el.role === "ADMIN" ? 'dai-badge-error' : "dai-badge-success"}`}>{el.role}</span>
+                                                    </td>
                                                     <td>{el.phone}</td>
                                                     <td>{formatDate(el.createdAt, {})}</td>
                                                     <td>

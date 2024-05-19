@@ -117,8 +117,15 @@ const Report: FunctionComponent<ReportProps> = () => {
                                                     <th>{idx + 1}</th>
                                                     <td>{el.user?.name ?? "-"}</td>
                                                     <td>{formatDate(el.enterDate, { onlyDate: true })}</td>
-                                                    <td>{formatDate(el.enterDate, { onlyTime: true })}</td>
-                                                    <td>{!el.exitDate ? "-" : formatDate(el.exitDate, { onlyTime: true })}</td>
+                                                    <td>
+                                                        <span className="dai-badge dai-badge-success">{formatDate(el.enterDate, { onlyTime: true })}</span>
+                                                    </td>
+                                                    <td>
+                                                        {
+                                                            !el.exitDate ? "-" :
+                                                                <span className="dai-badge dai-badge-error">{formatDate(el.exitDate, { onlyTime: true })}</span>
+                                                        }
+                                                    </td>
                                                     <td>{!el.exitDate ? "-" : dateDiffHour(el.enterDate, el.exitDate)}</td>
                                                 </tr>
                                             );

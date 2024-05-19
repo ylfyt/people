@@ -42,8 +42,8 @@ export async function sendHttp<T = any>({
         const response: ResponseDto<T> = await res.json();
         response.code = res.status;
         if (res.status === 401) {
-            localStorage.removeItem("jit")
-            window.location.href = "/"
+            localStorage.removeItem("jit");
+            window.location.reload();
         }
         return response;
     } catch (error) {

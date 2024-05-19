@@ -19,7 +19,7 @@ const ModalLogout: FunctionComponent<ModalLogoutProps> = ({ open, setOpen }) => 
         setLoading(false);
         setOpen(false);
         localStorage.removeItem("jit");
-        window.location.href = "/admin";
+        window.location.reload();
     };
 
 

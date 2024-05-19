@@ -6,6 +6,7 @@ import { useRootContext } from '@/contexts/root';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthContext } from '@/contexts/auth';
+import { ENV } from '@/helper/env';
 
 type Route = {
     icon: string;
@@ -35,7 +36,8 @@ interface MobileNavbarProps {}
 
 const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
     const { darkMode, setDarkMode, navbarTitle } = useRootContext();
-    const { setOpenModalLogout } = useAuthContext();
+    const { setOpenModalLogout, user } = useAuthContext();
+    
     const pathname = usePathname();
 
     const [expand, setExpand] = useState(false);
@@ -64,7 +66,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
                 >
                     <div className="ml-auto md:ml-0 md:mr-auto flex h-dvh w-3/4 sm:w-[20rem] flex-col justify-between bg-base-100">
                         <div className="flex items-center justify-between px-4 py-2">
-                            <h2 className="text-2xl font-semibold italic text-primary">Peoples</h2>
+                            <h2 className="text-2xl font-semibold italic text-primary">People</h2>
                             <button
                                 onClick={() => setDarkMode((prev) => !prev)}
                                 className="dai-btn dai-btn-circle dai-btn-warning dai-btn-sm"
@@ -92,8 +94,8 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
                         <hr className="border" />
                         <div className="flex items-center justify-between px-4 py-2">
                             <span className="flex items-center gap-2">
-                                <img className="size-12 rounded-full" src="/profile.jpg" alt="" />
-                                <span className="font-medium">Yudi Alfayat</span>
+                                <img className="size-12 rounded-full" src={`${ENV.API_BASE_URL}/${user?.profil_pic_url}`} alt="" />
+                                <span className="font-medium">{user?.name ?? '-'}</span>
                             </span>
                             <button onClick={() => {
                                 setOpenModalLogout(true);

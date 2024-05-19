@@ -31,8 +31,8 @@ interface MobileNavbarProps {}
 
 const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
     const { darkMode, setDarkMode, navbarTitle } = useRootContext();
-    const { user } = useAuthContext();
-    const { setOpenModalLogout } = useAuthContext();
+    const { setOpenModalLogout, user } = useAuthContext();
+    
     const pathname = usePathname();
 
     const [expand, setExpand] = useState(false);
@@ -90,7 +90,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = () => {
                         <div className="flex items-center justify-between px-4 py-2">
                             <span className="flex items-center gap-2">
                                 <img className="size-12 rounded-full" src={`${ENV.API_BASE_URL}/${user?.profil_pic_url}`} alt="" />
-                                <span className="font-medium">Yudi Alfayat</span>
+                                <span className="font-medium">{user?.name ?? '-'}</span>
                             </span>
                             <button onClick={() => {
                                 setOpenModalLogout(true);

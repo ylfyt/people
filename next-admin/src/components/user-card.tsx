@@ -24,13 +24,13 @@ const UserCad: FunctionComponent<UserCadProps> = ({ user }) => {
             </div>
             <div className="flex items-center justify-between">
                 <span>{user.email}</span>
-                <div className='flex items-center gap-1'>
+                <span className='text-xs italic'>{formatDate(user.updatedAt ?? user.createdAt, {})}</span>
+            </div>
+            <div className="flex items-center justify-between">
+                <div className='flex items-center gap-1 text-sm'>
                     <Icon icon="icon-park-twotone:phone" />
                     <span>{user.phone}</span>
                 </div>
-            </div>
-            <div className="flex items-center justify-between">
-                <span className='text-sm'>Modified At: {formatDate(user.updatedAt ?? user.createdAt, {})}</span>
             </div>
         </div>
     );

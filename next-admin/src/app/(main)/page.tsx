@@ -9,11 +9,14 @@ import { User } from '@/types/user';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Icon } from '@iconify/react';
+import ModalCreateUser from '@/components/modal-create-user';
 
 interface HomeProps {}
 
 const Home: FunctionComponent<HomeProps> = () => {
     const { setNavbarTitle } = useRootContext();
+
+    const [openModal, setOpenModal] = useState(false);
 
     const [users, setUsers] = useState<User[]>([]);
     const [showedUsers, setShowedUsers] = useState<User[]>([]);
@@ -59,7 +62,7 @@ const Home: FunctionComponent<HomeProps> = () => {
                     <input value={query} onChange={(e) => setQuery(e.target.value)} type="text" className="grow" placeholder="Search" />
                     <Icon icon="fa:search" />
                 </label>
-                <button className='dai-btn dai-btn-sm dai-btn-primary'>New</button>
+                <button onClick={() => setOpenModal(true)} className='dai-btn dai-btn-sm dai-btn-primary'>New</button>
             </div>
             <div className='grid sm:hidden grid-cols-1 gap-2 px-4'>
                 {
@@ -79,6 +82,7 @@ const Home: FunctionComponent<HomeProps> = () => {
                             })
                 }
             </div>
+            {openModal && <ModalCreateUser onSuccess={getUsers} open={openModal} setOpen={setOpenModal} />}
         </div>
     );
 };

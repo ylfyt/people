@@ -24,7 +24,11 @@ export { app as userController };
 
 app.get("/", authMiddleware("ADMIN"), async (req, res) => {
     try {
-        const users = await prisma.user.findMany();
+        const users = await prisma.user.findMany({
+            orderBy: {
+                createdAt: "desc"
+            }
+        });
         sendSuccessResponse(res, users);
     } catch (error) {
         console.log("error", error);
@@ -187,9 +191,9 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.post("/register", upload.single("picture"), async (req, res) => {
+app.post("/", upload.single("picture"), async (req, res) => {
     try {
-        const payload = ZOD_USER_REGISTER.safeParse(JSON.parse(req.body.data));
+        const payload = ZOD_USER_REGISTER.safeParse(JSON.parse(req.body.data ?? '{}'));
         if (!payload.success) {
             console.log(payload.error.errors);
             sendErrorResponse(res, 400, "Invalid data");
